@@ -58,9 +58,22 @@
 
   var profiles = {};
   var currentAirport = "kjfk";
-  var language = localStorage.getItem("zny-language") || "zh";
+  var language = initialLanguage();
   var form = document.getElementById("configForm");
   var lastResult;
+
+  function initialLanguage() {
+    var saved = localStorage.getItem("zny-language");
+    if (saved === "zh" || saved === "en" || saved === "ja") return saved;
+    var systemLanguages = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en"];
+    for (var i = 0; i < systemLanguages.length; i++) {
+      var code = systemLanguages[i].toLowerCase();
+      if (code.indexOf("zh") === 0) return "zh";
+      if (code.indexOf("ja") === 0) return "ja";
+      if (code.indexOf("en") === 0) return "en";
+    }
+    return "en";
+  }
 
   function t(key) { return messages[language][key] || messages.en[key] || key; }
   function localizedWarning(value) { return messages[language].warning[value] || value; }

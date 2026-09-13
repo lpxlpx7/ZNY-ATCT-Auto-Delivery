@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -16,10 +16,10 @@
         <span><strong>ZNY</strong><small>Departure Director</small></span>
       </a>
       <div class="header-tools">
-        <div class="online"><i></i><span data-i18n="online">规则已载入</span><b id="clock">--:--Z</b></div>
+        <div class="online"><i></i><span data-i18n="online">Rules loaded</span><b id="clock">--:--Z</b></div>
         <div class="language-switch" role="group" aria-label="Language">
-          <button type="button" data-language="zh" class="active">中</button>
-          <button type="button" data-language="en">EN</button>
+          <button type="button" data-language="zh">中</button>
+          <button type="button" data-language="en" class="active">EN</button>
           <button type="button" data-language="ja">日</button>
         </div>
       </div>
@@ -28,9 +28,9 @@
 
   <main id="top">
     <section class="hero">
-      <p class="overline" data-i18n="overline">纽约区域管制中心 · 塔台决策辅助</p>
-      <h1 data-i18n="heroTitle">更清晰地决定<br><strong>下一步怎么飞。</strong></h1>
-      <p data-i18n="heroLead">选择机场和运行配置，即时查看适用的离场程序、起飞航向、初始高度与管制频率。</p>
+      <p class="overline" data-i18n="overline">New York ARTCC · Tower decision support</p>
+      <h1 data-i18n="heroTitle">A clearer way to decide<br><strong>what comes next.</strong></h1>
+      <p data-i18n="heroLead">Choose an airport and operating configuration to see the applicable departure procedure, takeoff heading, initial altitude and frequency.</p>
     </section>
 
     <nav class="glass airport-tabs" id="airportTabs" aria-label="Airport"></nav>
@@ -38,13 +38,13 @@
     <section class="workspace">
       <aside class="glass control-panel">
         <div class="panel-heading">
-          <div><span>01</span><h2 data-i18n="configuration">运行配置</h2></div>
+          <div><span>01</span><h2 data-i18n="configuration">Configuration</h2></div>
           <b id="facilityBadge">----</b>
         </div>
-        <p class="panel-subtitle" id="profileSubtitle" data-i18n="loading">正在加载规则数据…</p>
+        <p class="panel-subtitle" id="profileSubtitle" data-i18n="loading">Loading rule data…</p>
         <form id="configForm"></form>
         <div class="source-card">
-          <span data-i18n="source">数据来源</span>
+          <span data-i18n="source">Data source</span>
           <strong id="sourceName">—</strong>
           <small id="sourceMeta">—</small>
         </div>
@@ -52,8 +52,8 @@
 
       <section class="glass result-panel">
         <div class="panel-heading">
-          <div><span>02</span><h2 data-i18n="result">起飞方案</h2></div>
-          <b class="live"><i></i><span data-i18n="live">实时</span></b>
+          <div><span>02</span><h2 data-i18n="result">Departure plan</h2></div>
+          <b class="live"><i></i><span data-i18n="live">Live</span></b>
         </div>
 
         <div class="primary-result">
@@ -64,32 +64,32 @@
             <span class="north">360</span><span class="east">090</span><span class="south">180</span><span class="west">270</span>
           </div>
           <div class="primary-copy">
-            <span id="primaryLabel">起飞航向 / 爬升</span>
+            <span id="primaryLabel">Takeoff heading / climb</span>
             <strong id="primaryInstruction">—</strong>
             <p id="procedureText">—</p>
           </div>
         </div>
 
         <div class="metric-grid">
-          <article><span data-i18n="altitude">初始高度</span><strong id="altitudeText">—</strong></article>
-          <article><span data-i18n="departure">离场频率</span><strong id="frequencyText">—</strong></article>
-          <article><span data-i18n="runway">跑道</span><strong id="runwayText">—</strong></article>
+          <article><span data-i18n="altitude">Initial altitude</span><strong id="altitudeText">—</strong></article>
+          <article><span data-i18n="departure">Departure</span><strong id="frequencyText">—</strong></article>
+          <article><span data-i18n="runway">Runway</span><strong id="runwayText">—</strong></article>
         </div>
 
         <div class="glass-inset clearance-card">
-          <div><span data-i18n="summary">指令摘要</span><button id="copyButton" type="button" data-i18n="copy">复制</button></div>
-          <p id="clearanceText" data-i18n="summaryPlaceholder">选择配置后将在此生成摘要。</p>
+          <div><span data-i18n="summary">Clearance summary</span><button id="copyButton" type="button" data-i18n="copy">Copy</button></div>
+          <p id="clearanceText" data-i18n="summaryPlaceholder">Your summary will appear after selecting a configuration.</p>
         </div>
 
         <div class="notice" id="warningCard">
-          <span>i</span><p id="warningText" data-i18n="defaultWarning">请始终核对实时构型、协调要求和有效 SOP。</p>
+          <span>i</span><p id="warningText" data-i18n="defaultWarning">Always verify the live configuration, coordination requirements and current SOP.</p>
         </div>
       </section>
     </section>
-    <footer><span data-i18n="simulation">仅供模拟决策辅助</span><span>DATA-DRIVEN · LOCAL ONLY · ZNY</span></footer>
+    <footer><span data-i18n="simulation">For simulation decision support only</span><span>DATA-DRIVEN · LOCAL ONLY · ZNY</span></footer>
   </main>
 
-  <div class="toast glass" id="toast" data-i18n="copied">已复制到剪贴板</div>
+  <div class="toast glass" id="toast" data-i18n="copied">Copied to clipboard</div>
   <script src="app.js"></script>
 </body>
 </html>

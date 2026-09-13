@@ -1,22 +1,57 @@
 # ZNY Departure Director
 
-基于 `data` 目录中 KJFK、KEWR、KLGA、KPHL 规则数据的本地起飞决策辅助网页。
+ZNY Departure Director is a local, data-driven departure decision-support web application for KJFK, KEWR, KLGA, and KPHL.
 
-## 启动
+It reads the airport profiles in the `data` directory and presents the applicable departure procedure, takeoff heading or climb instruction, initial altitude, departure frequency, clearance summary, and operational notes.
 
-双击 `start.bat`。浏览器会自动打开 `http://localhost:8765/`，保持命令窗口运行即可。
+## Features
 
-页面必须通过本地服务器打开，因为浏览器会阻止直接从 `file://` 页面读取 JSON 数据。程序不需要 Node.js，也不会访问或上传本地规则数据。
+- Decision profiles for KJFK, KEWR, KLGA, and KPHL
+- IFR and VFR decision support for KJFK
+- English, Simplified Chinese, and Japanese interface
+- Automatic browser language detection on the first visit
+- English fallback for unsupported system languages
+- Persistent manual language selection
+- Responsive desktop and mobile layout
+- Apple-inspired liquid-glass interface
+- Local operation with no analytics, uploads, or external application dependencies
+- Live rule loading from JSON without a build step
 
-## 数据
+Standard aviation procedure names, headings, climbs, altitudes, and clearance phraseology remain in English to preserve operational meaning.
 
-应用启动时直接加载：
+## Run Locally
+
+Double-click `start.bat` on Windows. The browser will open automatically at:
+
+```text
+http://localhost:8765/
+```
+
+Keep the terminal window open while using the application. Press `Ctrl+C` in that window to stop the local server.
+
+The site must be served through HTTP because browsers block JSON requests made directly from a `file://` page. Node.js is not required; the included PowerShell server handles the local files.
+
+## Rule Data
+
+The application loads these files at runtime:
 
 - `data/kjfk/atct-cab.json`
 - `data/kewr/departure.json`
 - `data/klga/departure.json`
 - `data/kphl/departure.json`
 
-修改 JSON 后刷新页面即可看到新结果，无需重新构建。
+After editing a JSON profile, refresh the browser to use the updated rules. No rebuild is required.
 
-> 本工具仅用于模拟管制决策辅助。实际使用前必须核对有效 SOP、实时机场构型、空域所有权及协调要求。
+## Language Selection
+
+On the first visit, the application checks the browser's preferred languages:
+
+- Chinese locales use Simplified Chinese.
+- Japanese locales use Japanese.
+- English and all unsupported locales use English.
+
+After the user selects a language manually, that choice is stored in the browser and takes priority on future visits.
+
+## Disclaimer
+
+This project is intended only for simulation decision support. Always verify the current SOP, live airport configuration, airspace ownership, departure eligibility, and coordination requirements before use.
