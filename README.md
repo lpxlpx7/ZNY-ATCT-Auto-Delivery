@@ -55,3 +55,9 @@ After the user selects a language manually, that choice is stored in the browser
 ## Disclaimer
 
 This project is intended only for simulation decision support. Always verify the current SOP, live airport configuration, airspace ownership, departure eligibility, and coordination requirements before use.
+
+Operational source reference: [New York ARTCC](https://nyartcc.org)
+
+## Copyright
+
+Copyright © 2026 Jurina. All rights reserved.
