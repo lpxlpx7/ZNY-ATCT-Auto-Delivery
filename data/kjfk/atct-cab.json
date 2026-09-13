@@ -1,0 +1,249 @@
+{
+  "schema_version": 1,
+  "profile": {
+    "id": "zny-kjfk-atct-cab",
+    "type": "decision",
+    "domain": "atct",
+    "status": "encoded",
+    "label": "KJFK Departure Decision Profile",
+    "artcc": "ZNY",
+    "artcc_label": "New York ARTCC (ZNY)",
+    "facility": "KJFK",
+    "facility_id": "kjfk",
+    "facility_label": "Kennedy International (KJFK)",
+    "area": "ATCT CAB",
+    "title": "SCOPEBRIEF | ZNY KJFK ATCT CAB",
+    "subtitle": "Compact IFR and VFR departure decision support"
+  },
+  "source": {
+    "document": "NYARTCC JFK SOP",
+    "revision": "Rev. 30",
+    "revised": "2026-07-08",
+    "url": "https://wiki.nyartcc.org/wiki/JFK_SOP",
+    "retrieved": "2026-09-10"
+  },
+  "options": {
+    "operation": [
+      { "id": "ifr_departure", "label": "IFR departure" },
+      { "id": "vfr_departure", "label": "VFR departure" }
+    ],
+    "aircraft": [
+      { "id": "jet", "label": "Jet / turbojet" },
+      { "id": "prop", "label": "Prop / turboprop" }
+    ],
+    "runway": [
+      { "id": "04L", "label": "04L" }, { "id": "04R", "label": "04R" },
+      { "id": "13L", "label": "13L" }, { "id": "13R", "label": "13R" },
+      { "id": "22L", "label": "22L" }, { "id": "22R", "label": "22R" },
+      { "id": "31L", "label": "31L" }, { "id": "31R", "label": "31R" }
+    ],
+    "configuration": [
+      { "id": "normal", "label": "Normal operations" },
+      { "id": "overnight", "label": "2300-0700 local" },
+      { "id": "overflow_22l", "label": "Overflow 22L" },
+      { "id": "overflow_4r", "label": "Overflow 4R" },
+      { "id": "ils_13l", "label": "ILS 13L in use" },
+      { "id": "lga_loc31", "label": "LGA landing LOC 31" }
+    ],
+    "navigation": [
+      { "id": "rnav", "label": "RNAV capable" },
+      { "id": "non_rnav", "label": "Non-RNAV; SID capable" },
+      { "id": "unable_sid", "label": "Unable SID / no charts" }
+    ],
+    "route_group": [
+      { "id": "standard", "label": "Standard / other route" },
+      { "id": "deezz_candr", "label": "DEEZZ: J60/J64/Q480/Q42" },
+      { "id": "deezz_towin", "label": "DEEZZ: J6 (TMU only)" }
+    ],
+    "exit": [
+      { "id": "SAX", "label": "SAX" }, { "id": "COATE", "label": "COATE" },
+      { "id": "NEION", "label": "NEION" }, { "id": "HAAYS", "label": "HAAYS" },
+      { "id": "GAYEL", "label": "GAYEL" }, { "id": "DEEZZ", "label": "DEEZZ" },
+      { "id": "GREKI", "label": "GREKI" }, { "id": "MERIT", "label": "MERIT" },
+      { "id": "BAYYS", "label": "BAYYS" }, { "id": "BDR", "label": "BDR" },
+      { "id": "DIXIE", "label": "DIXIE" }, { "id": "WHITE", "label": "WHITE" },
+      { "id": "RBV", "label": "RBV" }, { "id": "ARD", "label": "ARD" },
+      { "id": "BETTE", "label": "BETTE" }, { "id": "HAPIE", "label": "HAPIE" },
+      { "id": "SHIPP", "label": "SHIPP" }, { "id": "WAVEY", "label": "WAVEY" }
+    ]
+  },
+  "exits": [
+    { "id": "SAX", "gate": "north" }, { "id": "COATE", "gate": "north" },
+    { "id": "NEION", "gate": "north" }, { "id": "HAAYS", "gate": "north" },
+    { "id": "GAYEL", "gate": "north" }, { "id": "DEEZZ", "gate": "north" },
+    { "id": "GREKI", "gate": "east" }, { "id": "MERIT", "gate": "east" },
+    { "id": "BAYYS", "gate": "east" }, { "id": "BDR", "gate": "east" },
+    { "id": "DIXIE", "gate": "southwest" }, { "id": "WHITE", "gate": "southwest" },
+    { "id": "RBV", "gate": "southwest" }, { "id": "ARD", "gate": "southwest" },
+    { "id": "BETTE", "gate": "water_bette_hapie" }, { "id": "HAPIE", "gate": "water_bette_hapie" },
+    { "id": "SHIPP", "gate": "water_shipp_wavey" }, { "id": "WAVEY", "gate": "water_shipp_wavey" }
+  ],
+  "rules": {
+    "ifr_procedure": [
+      {
+        "match": { "aircraft": ["jet"], "navigation": ["rnav"], "route_group": ["deezz_candr"] },
+        "result": { "sid": "deezz", "sid_label": "DEEZZ# Departure", "transition": "CANDR", "clearance_segment": "DEEZZ# Departure, CANDR transition" }
+      },
+      {
+        "match": { "aircraft": ["jet"], "navigation": ["rnav"], "route_group": ["deezz_towin"] },
+        "result": { "sid": "deezz", "sid_label": "DEEZZ# Departure", "transition": "TOWIN", "clearance_segment": "DEEZZ# Departure, TOWIN transition", "warning": "TOWIN/J6 is TMU only; verify the qualifying destination and TMU direction." }
+      },
+      {
+        "match": { "navigation": ["rnav"], "runway": ["31L", "31R"], "exit_gate": ["southwest"] },
+        "result": { "sid": "skorr", "sid_label": "SKORR# Departure", "transition": "RNGRR", "clearance_segment": "SKORR# Departure, RNGRR transition" }
+      },
+      {
+        "match": { "navigation": ["rnav"], "runway": ["31L", "31R"], "exit_gate": ["*"] },
+        "result": { "sid": "skorr", "sid_label": "SKORR# Departure", "transition": "YNKEE", "clearance_segment": "SKORR# Departure, YNKEE transition" }
+      },
+      {
+        "match": { "navigation": ["unable_sid"], "runway": ["*"] },
+        "result": { "sid": "none", "sid_label": "No SID", "clearance_segment": "radar vectors", "warning": "Verify pilot chart capability. If unable to accept a SID, Tower must issue applicable initial instructions with takeoff clearance." }
+      },
+      {
+        "match": { "runway": ["*"] },
+        "result": { "sid": "jfk", "sid_label": "JFK# Departure", "clearance_segment": "Kennedy# Departure" }
+      }
+    ],
+    "ifr_climb": [
+      {
+        "match": { "sid": ["skorr"], "runway": ["*"] },
+        "result": { "climb_id": "skorr", "instruction": "No separately issued climb; use SKORR transition", "clearance_segment": "" }
+      },
+      {
+        "match": { "sid": ["deezz"], "runway": ["22L", "22R"] },
+        "result": { "climb_id": "runway_heading", "instruction": "FLY RUNWAY HEADING", "clearance_segment": "fly runway heading" }
+      },
+      {
+        "match": { "runway": ["04L", "04R"] },
+        "result": { "climb_id": "heading_100", "instruction": "RWY HDG to JFK 1.5 DME, then RIGHT HDG 100", "clearance_segment": "except fly runway heading to the Kennedy 1.5 DME, then turn right heading 100" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overnight"], "exit_gate": ["*"] },
+        "result": { "climb_id": "heading_185", "instruction": "HDG 185", "clearance_segment": "heading 185" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["ils_13l"], "exit_gate": ["southwest"] },
+        "result": { "climb_id": "heading_185", "instruction": "HDG 185", "clearance_segment": "heading 185" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["ils_13l"], "exit_gate": ["water_shipp_wavey"] },
+        "result": { "climb_id": "heading_170", "instruction": "HDG 170", "clearance_segment": "heading 170" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["ils_13l"], "exit_gate": ["water_bette_hapie"] },
+        "result": { "climb_id": "heading_155", "instruction": "HDG 155", "clearance_segment": "heading 155" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["ils_13l"], "aircraft": ["jet"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_155", "instruction": "HDG 155", "clearance_segment": "heading 155" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["ils_13l"], "aircraft": ["prop"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_140", "instruction": "HDG 140", "clearance_segment": "heading 140" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_22l"], "exit_gate": ["southwest"] },
+        "result": { "climb_id": "heading_185", "instruction": "HDG 185", "clearance_segment": "heading 185" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_22l"], "exit_gate": ["water_shipp_wavey"] },
+        "result": { "climb_id": "heading_170", "instruction": "HDG 170", "clearance_segment": "heading 170" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_22l"], "exit_gate": ["water_bette_hapie"] },
+        "result": { "climb_id": "heading_155", "instruction": "HDG 155", "clearance_segment": "heading 155" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_22l"], "aircraft": ["jet"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_155", "instruction": "HDG 155", "clearance_segment": "heading 155" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_22l"], "aircraft": ["prop"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_140", "instruction": "HDG 140", "clearance_segment": "heading 140" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_4r"], "aircraft": ["prop"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_070", "instruction": "HDG 070", "clearance_segment": "heading 070" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_4r"], "aircraft": ["jet"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_090", "instruction": "HDG 090", "clearance_segment": "heading 090" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "configuration": ["overflow_4r"], "exit_gate": ["*"] },
+        "result": { "climb_id": "heading_110", "instruction": "HDG 110", "clearance_segment": "heading 110" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "exit_gate": ["southwest"] },
+        "result": { "climb_id": "heading_185", "instruction": "HDG 185", "clearance_segment": "heading 185" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "exit_gate": ["water_shipp_wavey"] },
+        "result": { "climb_id": "heading_170", "instruction": "HDG 170", "clearance_segment": "heading 170" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "exit_gate": ["water_bette_hapie"] },
+        "result": { "climb_id": "heading_155", "instruction": "HDG 155", "clearance_segment": "heading 155" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "aircraft": ["jet"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_110", "instruction": "HDG 110", "clearance_segment": "heading 110" }
+      },
+      {
+        "match": { "runway": ["13L", "13R"], "aircraft": ["prop"], "exit_gate": ["north", "east"] },
+        "result": { "climb_id": "heading_090", "instruction": "HDG 090", "clearance_segment": "heading 090" }
+      },
+      {
+        "match": { "sid": ["jfk"], "runway": ["22L", "22R"], "configuration": ["overnight"] },
+        "result": { "climb_id": "gateway", "instruction": "GATEWAY CLIMB", "clearance_segment": "Gateway Climb" }
+      },
+      {
+        "match": { "sid": ["jfk"], "runway": ["31L", "31R"], "exit_gate": ["southwest"] },
+        "result": { "climb_id": "breezy", "instruction": "BREEZY POINT CLIMB", "clearance_segment": "Breezy Point Climb" }
+      },
+      {
+        "match": { "sid": ["jfk"], "runway": ["31L", "31R"], "aircraft": ["prop"], "configuration": ["lga_loc31"], "exit_gate": ["*"] },
+        "result": { "climb_id": "canarsie", "instruction": "CANARSIE CLIMB", "clearance_segment": "Canarsie Climb", "warning": "Idlewild is prohibited while LGA is landing LOC 31; Canarsie is selected." }
+      },
+      {
+        "match": { "sid": ["jfk"], "runway": ["31L", "31R"], "aircraft": ["prop"], "exit_gate": ["*"] },
+        "result": { "climb_id": "idlewild", "instruction": "IDLEWILD CLIMB", "clearance_segment": "Idlewild Climb" }
+      },
+      {
+        "match": { "sid": ["jfk"], "runway": ["31L", "31R"], "aircraft": ["jet"], "exit_gate": ["*"] },
+        "result": { "climb_id": "canarsie", "instruction": "CANARSIE CLIMB", "clearance_segment": "Canarsie Climb" }
+      },
+      {
+        "match": { "runway": ["*"] },
+        "result": { "climb_id": "none", "instruction": "No separate climb assignment", "clearance_segment": "" }
+      }
+    ],
+    "ifr_altitude": [
+      { "match": { "sid": ["skorr"], "climb_id": ["*"] }, "result": { "phraseology": "CLIMB VIA SID" } },
+      { "match": { "sid": ["deezz"], "runway": ["31L", "31R"], "climb_id": ["*"] }, "result": { "phraseology": "CLIMB VIA SID" } },
+      { "match": { "sid": ["jfk"], "climb_id": ["breezy", "canarsie"] }, "result": { "phraseology": "CLIMB VIA SID" } },
+      { "match": { "climb_id": ["idlewild"] }, "result": { "phraseology": "MAINTAIN 2000" } },
+      { "match": { "sid": ["*"], "climb_id": ["*"] }, "result": { "phraseology": "MAINTAIN 5000" } }
+    ],
+    "departure_frequency": [
+      { "match": { "runway": ["*"] }, "result": { "frequency": "135.900 (guide only; coordinate coverage)" } }
+    ],
+    "vfr_departure": [
+      { "match": { "flight_following": ["no"], "aircraft": ["jet"], "runway": ["*"] }, "result": { "instruction": "NOT AUTHORIZED BY THIS PROFILE", "altitude": "-", "frequency": "-", "clearance": "No-flight-following profile is props only. Coordinate another clearance." } },
+      { "match": { "flight_following": ["no"], "runway": ["04L", "04R"] }, "result": { "instruction": "RIGHT HDG 180", "altitude": "VFR AT OR BELOW 1400", "frequency": "125.250 (or controller covering CBA)", "clearance": "Cleared out of the New York Bravo Airspace via right heading 180, maintain VFR at or below 1400, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["no"], "runway": ["22L", "22R"] }, "result": { "instruction": "FLY RUNWAY HEADING", "altitude": "VFR AT OR BELOW 1400", "frequency": "125.250 (or controller covering CBA)", "clearance": "Cleared out of the New York Bravo Airspace via runway heading, maintain VFR at or below 1400, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["no"], "runway": ["13L", "13R"] }, "result": { "instruction": "RIGHT HDG 180", "altitude": "VFR AT OR BELOW 1400", "frequency": "125.250 (or controller covering CBA)", "clearance": "Cleared out of the New York Bravo Airspace via right heading 180, maintain VFR at or below 1400, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["no"], "runway": ["31L", "31R"] }, "result": { "instruction": "LEFT HDG 170", "altitude": "VFR AT OR BELOW 1400", "frequency": "125.250 (or controller covering CBA)", "clearance": "Cleared out of the New York Bravo Airspace via left heading 170, maintain VFR at or below 1400, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["04L", "04R"] }, "result": { "instruction": "RIGHT HDG 100", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via right heading 100, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["22L", "22R"] }, "result": { "instruction": "FLY RUNWAY HEADING", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via runway heading, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["13L", "13R"], "exit_gate": ["southwest"] }, "result": { "instruction": "RIGHT HDG 185", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via right heading 185, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["13L", "13R"], "aircraft": ["jet"] }, "result": { "instruction": "LEFT HDG 110", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via left heading 110, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["13L", "13R"], "aircraft": ["prop"] }, "result": { "instruction": "LEFT HDG 090", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via left heading 090, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["31L", "31R"], "exit_gate": ["southwest"] }, "result": { "instruction": "LEFT HDG 220", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via left heading 220, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["31L", "31R"], "configuration": ["lga_loc31"] }, "result": { "instruction": "LEFT HDG 170", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via left heading 170, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["31L", "31R"], "aircraft": ["jet"] }, "result": { "instruction": "LEFT HDG 170", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via left heading 170, maintain 2000, departure frequency [FREQ], squawk [CODE]." } },
+      { "match": { "flight_following": ["yes"], "runway": ["31L", "31R"], "aircraft": ["prop"] }, "result": { "instruction": "RIGHT HDG 090", "altitude": "MAINTAIN 2000", "frequency": "135.900 (coordinate coverage)", "clearance": "Cleared through the New York Bravo Airspace via right heading 090, maintain 2000, departure frequency [FREQ], squawk [CODE]." } }
+    ]
+  }
+}

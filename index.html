@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07110f">
+  <title>ZNY Departure Director</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="ZNY Departure Director">
+      <span class="brand-mark"><i></i><i></i><i></i></span>
+      <span><strong>ZNY</strong><small>DEPARTURE DIRECTOR</small></span>
+    </a>
+    <div class="status"><span class="status-dot"></span><span>RULE DATA ONLINE</span><b id="clock">--:--:--Z</b></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">NEW YORK ARTCC · ATCT DECISION SUPPORT</p>
+        <h1>起飞指令，<em>一目了然。</em></h1>
+        <p class="lede">选择机场与当前运行配置，系统依据本地 SOP 规则数据给出适用的离场程序、起飞航向和初始高度。</p>
+      </div>
+      <div class="scope-ring" aria-hidden="true"><span></span><b>N</b></div>
+    </section>
+
+    <nav class="airport-tabs" id="airportTabs" aria-label="机场"></nav>
+
+    <section class="workspace">
+      <aside class="control-panel">
+        <div class="panel-heading">
+          <div><span class="step">01</span><h2>运行配置</h2></div>
+          <span id="facilityBadge" class="facility-badge">----</span>
+        </div>
+        <p class="panel-subtitle" id="profileSubtitle">正在加载规则数据...</p>
+        <form id="configForm"></form>
+        <div class="source-card">
+          <span>SOURCE DOCUMENT</span>
+          <strong id="sourceName">—</strong>
+          <small id="sourceMeta">—</small>
+        </div>
+      </aside>
+
+      <section class="result-panel">
+        <div class="panel-heading result-heading">
+          <div><span class="step">02</span><h2>起飞方案</h2></div>
+          <span class="live-chip"><i></i> LIVE</span>
+        </div>
+
+        <div class="primary-result">
+          <div class="compass" id="compass">
+            <div class="compass-ticks"></div>
+            <div class="heading-line" id="headingLine"></div>
+            <div class="aircraft">▲</div>
+            <span class="north">360</span><span class="east">090</span><span class="south">180</span><span class="west">270</span>
+          </div>
+          <div class="primary-copy">
+            <span id="primaryLabel">TAKEOFF INSTRUCTION</span>
+            <strong id="primaryInstruction">—</strong>
+            <p id="procedureText">等待配置</p>
+          </div>
+        </div>
+
+        <div class="metric-grid">
+          <article><span>INITIAL ALTITUDE</span><strong id="altitudeText">—</strong></article>
+          <article><span>DEPARTURE</span><strong id="frequencyText">—</strong></article>
+          <article><span>RUNWAY</span><strong id="runwayText">—</strong></article>
+        </div>
+
+        <div class="clearance-card">
+          <div class="clearance-title"><span>指令摘要</span><button id="copyButton" type="button">复制文本</button></div>
+          <p id="clearanceText">选择配置后将在此生成摘要。</p>
+        </div>
+
+        <div class="warning-card" id="warningCard">
+          <span>!</span><p id="warningText">请始终核对实时构型、协调要求和有效 SOP。</p>
+        </div>
+      </section>
+    </section>
+    <footer><span>FOR SIMULATION DECISION SUPPORT</span><span>DATA-DRIVEN · LOCAL ONLY · ZNY</span></footer>
+  </main>
+
+  <div class="toast" id="toast">已复制到剪贴板</div>
+  <script src="app.js"></script>
+</body>
+</html>

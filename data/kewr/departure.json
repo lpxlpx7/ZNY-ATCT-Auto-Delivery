@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "profile": { "id": "kewr-departure", "type": "decision", "domain": "atct", "status": "encoded-partial", "label": "EWR IFR Departure Core", "artcc": "ZNY", "artcc_label": "New York ARTCC (ZNY)", "facility": "KEWR", "facility_id": "kewr", "facility_label": "Newark Liberty International (KEWR)", "area": "ATCT", "title": "SCOPEBRIEF | KEWR DEPARTURE", "subtitle": "Core SID and initial-altitude selection from EWR SOP Rev. 5 and active MBI" },
+  "source": { "document": "NYARTCC EWR SOP", "revision": "Rev. 5", "revised": "2026-07-27", "url": "https://wiki.nyartcc.org/wiki/EWR_SOP", "retrieved": "2026-09-10" },
+  "inputs": [
+    { "id": "runway", "label": "Departure runway", "type": "select", "default": "04L", "options": [{"id":"04L","label":"04L"},{"id":"04R","label":"04R"},{"id":"11","label":"11"},{"id":"22L","label":"22L"},{"id":"22R","label":"22R"},{"id":"29","label":"29"}] },
+    { "id": "condition", "label": "Procedure condition", "type": "select", "default": "normal", "options": [{"id":"normal","label":"Normal"},{"id":"lga_ils13","label":"LGA landing ILS 13"},{"id":"portt_request","label":"RNAV PORTT pilot request"},{"id":"unable_sid","label":"Unable SID / no charts"}] }
+  ],
+  "defaults": { "sid": "EWR# Departure", "climb": "Published procedure", "altitude": "CLIMB VIA SID", "departure": "119.200 or coordinated coverage", "warning": "Check PRD, exit eligibility, runway configuration, and active MBI." },
+  "rules": [
+    { "match": { "runway": ["22L","22R"] }, "result": { "sid": "LIB# Departure", "climb": "TURNPIKE CLIMB", "altitude": "MAINTAIN 2500" } },
+    { "match": { "runway": ["29"] }, "result": { "sid": "EWR# Departure", "climb": "Published procedure", "altitude": "MAINTAIN 3000" } },
+    { "match": { "condition": ["lga_ils13"], "runway": ["04L","04R","11"] }, "result": { "sid": "DEVIL# Departure", "climb": "Published DEVIL procedure", "altitude": "MAINTAIN 2000" } },
+    { "match": { "condition": ["portt_request"], "runway": ["22L","22R"] }, "result": { "sid": "PORTT# Departure", "climb": "Transition if ELIOT/LANNA/PARKE/BIGGY; otherwise radar vectors", "altitude": "MAINTAIN 2500", "warning": "PORTT requires RNAV and a verbal pilot request." } },
+    { "match": { "condition": ["unable_sid"] }, "result": { "sid": "NO SID - RADAR VECTORS", "climb": "Tower issues runway-specific initial heading", "warning": "Apply EWR no-DP heading table and coordinate departure frequency." } }
+  ],
+  "output_fields": [{"id":"sid","label":"SID"},{"id":"climb","label":"HDG / CLB"},{"id":"altitude","label":"Initial altitude"},{"id":"departure","label":"Departure"}]
+}

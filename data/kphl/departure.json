@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "profile": { "id": "kphl-departure", "type": "decision", "domain": "atct", "status": "encoded-partial", "label": "PHL IFR Departure Headings", "artcc": "ZNY", "artcc_label": "New York ARTCC (ZNY)", "facility": "KPHL", "facility_id": "kphl", "facility_label": "Philadelphia International (KPHL)", "area": "ATCT", "title": "SCOPEBRIEF | KPHL DEPARTURE", "subtitle": "PHL# initial altitude and mandatory tower departure heading" },
+  "source": { "document": "NYARTCC PHL SOP", "revision": "Rev. 19", "revised": "2026-03-29", "url": "https://wiki.nyartcc.org/wiki/PHL_SOP", "retrieved": "2026-09-10" },
+  "inputs": [
+    { "id": "runway", "label": "Departure runway", "type": "select", "default": "27", "options": [{"id":"27","label":"27L/R"},{"id":"09","label":"09L/R or 08"},{"id":"17","label":"17"},{"id":"35","label":"35"}] },
+    { "id": "aircraft", "label": "Aircraft", "type": "select", "default": "jet", "options": [{"id":"jet","label":"Jet"},{"id":"prop","label":"Prop"}] },
+    { "id": "exit", "label": "Exit group", "type": "select", "default": "north", "options": [{"id":"north","label":"North gate"},{"id":"south","label":"South gate"},{"id":"ood_ditch_ruuth","label":"OOD / DITCH / RUUTH"},{"id":"dqo_stoen","label":"DQO / STOEN"},{"id":"mxe_ptw_fjc_mazie_ard","label":"MXE / PTW / FJC / MAZIE / ARD"}] }
+  ],
+  "defaults": { "sid": "PHL# Departure", "heading": "Coordinate runway/type/exit heading", "altitude": "JET 5000 / PROP 3000 or lower assigned", "departure": "North 124.350 / South 119.750", "warning": "Check PRD, SAPR, arrival runway restrictions, and nonstandard runway release." },
+  "rules": [
+    { "match": { "runway": ["27"], "aircraft": ["prop"], "exit": ["north"] }, "result": { "heading": "HDG 300" } },
+    { "match": { "runway": ["27"], "aircraft": ["prop"], "exit": ["south"] }, "result": { "heading": "HDG 210" } },
+    { "match": { "runway": ["27"], "exit": ["ood_ditch_ruuth"] }, "result": { "heading": "HDG 230" } },
+    { "match": { "runway": ["27"], "exit": ["dqo_stoen"] }, "result": { "heading": "HDG 245" } },
+    { "match": { "runway": ["27"], "exit": ["mxe_ptw_fjc_mazie_ard","north"] }, "result": { "heading": "HDG 265" } },
+    { "match": { "runway": ["09"], "aircraft": ["prop"], "exit": ["north"] }, "result": { "heading": "HDG 065" } },
+    { "match": { "runway": ["09"], "aircraft": ["prop"], "exit": ["south"] }, "result": { "heading": "HDG 125" } },
+    { "match": { "runway": ["17"] }, "result": { "heading": "HDG 130" } },
+    { "match": { "runway": ["35"] }, "result": { "heading": "HDG 300 if cruise >= 5000; otherwise runway heading" } }
+  ],
+  "output_fields": [{"id":"sid","label":"SID"},{"id":"heading","label":"Takeoff heading"},{"id":"altitude","label":"Initial altitude"},{"id":"departure","label":"Departure"}]
+}
