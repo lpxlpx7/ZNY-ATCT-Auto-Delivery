@@ -3,96 +3,103 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="Departure headings, initial altitudes and frequencies for JFK, Newark, LaGuardia and Philadelphia on VATSIM.">
+  <meta name="theme-color" content="#f5f5f7">
   <title>ZNY Departure Director</title>
+  <script>
+    (function () {
+      var preference = "system";
+      try { preference = localStorage.getItem("theme") || "system"; } catch (error) {}
+      var dark = preference === "dark" || (preference === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+    }());
+  </script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="ambient" aria-hidden="true"><i></i><i></i><i></i></div>
   <header class="site-header">
-    <div class="glass nav-shell">
-      <a class="brand" href="#top" aria-label="ZNY Departure Director">
-        <span class="brand-symbol">Z</span>
-        <span><strong>ZNY</strong><small>Departure Director</small></span>
-      </a>
-      <div class="header-tools">
-        <div class="online"><i></i><span data-i18n="online">Rules loaded</span><b id="clock">--:--Z</b></div>
-        <div class="language-switch" role="group" aria-label="Language">
-          <button type="button" data-language="zh">中</button>
-          <button type="button" data-language="en" class="active">EN</button>
-          <button type="button" data-language="ja">日</button>
-        </div>
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#top">ZNY Departure Director</a>
+      <div class="nav-right">
+        <span class="clock" id="clock" title="Current UTC time">--:--Z</span>
+        <button class="theme-button" type="button" aria-label="Switch color theme"><span class="icon icon-moon" aria-hidden="true"></span></button>
       </div>
-    </div>
+    </nav>
   </header>
 
   <main id="top">
-    <section class="hero">
-      <p class="overline" data-i18n="overline">New York ARTCC · Tower decision support</p>
-      <h1 data-i18n="heroTitle">A clearer way to decide<br><strong>what comes next.</strong></h1>
-      <p data-i18n="heroLead">Choose an airport and operating configuration to see the applicable departure procedure, takeoff heading, initial altitude and frequency.</p>
-    </section>
+    <header class="intro shell">
+      <p class="eyebrow">New York ARTCC</p>
+      <h1>Departures, sorted.</h1>
+      <p>Pick an airport and its current configuration to get the SID, heading, initial altitude and departure frequency.</p>
+    </header>
 
-    <nav class="glass airport-tabs" id="airportTabs" aria-label="Airport"></nav>
+    <div class="stack">
+      <nav class="airport-tabs" id="airportTabs" aria-label="Airport"></nav>
 
-    <section class="workspace">
-      <aside class="glass control-panel">
-        <div class="panel-heading">
-          <div><span>01</span><h2 data-i18n="configuration">Configuration</h2></div>
-          <b id="facilityBadge">----</b>
-        </div>
-        <p class="panel-subtitle" id="profileSubtitle" data-i18n="loading">Loading rule data…</p>
-        <form id="configForm"></form>
-        <div class="source-card">
-          <span data-i18n="source">Data source</span>
-          <strong id="sourceName">—</strong>
-          <small id="sourceMeta">—</small>
-        </div>
-      </aside>
-
-      <section class="glass result-panel">
-        <div class="panel-heading">
-          <div><span>02</span><h2 data-i18n="result">Departure plan</h2></div>
-          <b class="live"><i></i><span data-i18n="live">Live</span></b>
-        </div>
-
-        <div class="primary-result">
-          <div class="compass" aria-hidden="true">
-            <div class="compass-rings"></div>
-            <div class="heading-line" id="headingLine"></div>
-            <div class="aircraft">▲</div>
-            <span class="north">360</span><span class="east">090</span><span class="south">180</span><span class="west">270</span>
+      <section class="workspace">
+        <aside class="tile control-panel">
+          <div class="panel-heading">
+            <h2>Configuration</h2>
+            <span class="badge" id="facilityBadge">----</span>
           </div>
-          <div class="primary-copy">
-            <span id="primaryLabel">Takeoff heading / climb</span>
-            <strong id="primaryInstruction">—</strong>
-            <p id="procedureText">—</p>
+          <p class="panel-subtitle" id="profileSubtitle">Loading rules…</p>
+          <form id="configForm"></form>
+          <div class="source-card">
+            <span>Source</span>
+            <strong id="sourceName">—</strong>
+            <small id="sourceMeta">—</small>
           </div>
-        </div>
+        </aside>
 
-        <div class="metric-grid">
-          <article><span data-i18n="altitude">Initial altitude</span><strong id="altitudeText">—</strong></article>
-          <article><span data-i18n="departure">Departure</span><strong id="frequencyText">—</strong></article>
-          <article><span data-i18n="runway">Runway</span><strong id="runwayText">—</strong></article>
-        </div>
+        <section class="tile result-panel">
+          <div class="panel-heading">
+            <h2>Departure</h2>
+          </div>
 
-        <div class="glass-inset clearance-card">
-          <div><span data-i18n="summary">Clearance summary</span><button id="copyButton" type="button" data-i18n="copy">Copy</button></div>
-          <p id="clearanceText" data-i18n="summaryPlaceholder">Your summary will appear after selecting a configuration.</p>
-        </div>
+          <div class="primary-result">
+            <div class="compass" aria-hidden="true">
+              <div class="compass-rings"></div>
+              <div class="heading-line" id="headingLine"></div>
+              <div class="aircraft">▲</div>
+              <span class="north">360</span><span class="east">090</span><span class="south">180</span><span class="west">270</span>
+            </div>
+            <div class="primary-copy">
+              <span id="primaryLabel">Heading / climb</span>
+              <strong id="primaryInstruction">—</strong>
+              <p id="procedureText">—</p>
+            </div>
+          </div>
 
-        <div class="notice" id="warningCard">
-          <span>i</span><p id="warningText" data-i18n="defaultWarning">Always verify the live configuration, coordination requirements and current SOP.</p>
-        </div>
+          <div class="metric-grid">
+            <article><span>Initial altitude</span><strong id="altitudeText">—</strong></article>
+            <article><span>Departure</span><strong id="frequencyText">—</strong></article>
+            <article><span>Runway</span><strong id="runwayText">—</strong></article>
+          </div>
+
+          <div class="clearance-card">
+            <div><span>Clearance</span><button id="copyButton" type="button">Copy</button></div>
+            <p id="clearanceText">—</p>
+          </div>
+
+          <p class="notice" id="warningText">Check the current configuration and SOP before you issue anything.</p>
+        </section>
       </section>
-    </section>
-    <footer>
-      <div><strong data-i18n="copyright">© 2026 Jurina. All rights reserved.</strong><span data-i18n="simulation">For simulation decision support only</span></div>
-      <div class="footer-source"><span data-i18n="sourceReference">Source reference</span><a href="https://nyartcc.org" target="_blank" rel="noopener noreferrer">nyartcc.org</a></div>
-    </footer>
+    </div>
   </main>
 
-  <div class="toast glass" id="toast" data-i18n="copied">Copied to clipboard</div>
+  <footer class="site-footer shell">
+    <div class="footer-top">
+      <p>For VATSIM use only. Not for real-world flight.</p>
+      <a href="https://nyartcc.org" target="_blank" rel="noopener noreferrer">Procedures from nyartcc.org <span class="icon icon-external" aria-hidden="true"></span></a>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Jurina</p>
+      <a href="https://github.com/lpxlpx7/ZNY-ATCT-Auto-Delivery" target="_blank" rel="noopener noreferrer">Source on GitHub <span class="icon icon-external" aria-hidden="true"></span></a>
+    </div>
+  </footer>
+
+  <div class="toast" id="toast" role="status">Copied</div>
   <script src="app.js"></script>
 </body>
 </html>
