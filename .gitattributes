@@ -1,0 +1,3 @@
+# index.html is a ten-line stub that loads src/main.ts; keep it out of the language stats.
+index.html linguist-detectable=false
+* text=auto eol=lf

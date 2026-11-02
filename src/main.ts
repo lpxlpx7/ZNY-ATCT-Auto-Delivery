@@ -1,4 +1,4 @@
-import "./styles.css";
+import "./boot";
 import { AIRPORTS, findAirport } from "./airports";
 import { headingFrom, normalize, runwayHeading } from "./engine";
 import { loadState, onHashChange, saveState } from "./state";

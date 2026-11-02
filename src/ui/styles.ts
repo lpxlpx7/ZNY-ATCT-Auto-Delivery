@@ -1,3 +1,10 @@
+/** Collapses comments and whitespace so the injected stylesheet stays small. */
+function css(strings: TemplateStringsArray): string {
+  return strings.raw.join("").replace(/\/\*[\s\S]*?\*\//g, "").replace(/\s+/g, " ").replace(/\s*([{}:;,>])\s*/g, "$1").trim();
+}
+
+/** All page styles, light and dark themes included. */
+export const styles = css`
 /* ---------- Tokens ---------- */
 :root {
   color-scheme: light;
@@ -273,3 +280,4 @@ main { padding-top: 24px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+`;

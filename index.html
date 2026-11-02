@@ -4,114 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Departure headings, initial altitudes and frequencies for JFK, Newark, LaGuardia and Philadelphia on VATSIM.">
+  <meta name="color-scheme" content="light dark">
   <meta name="theme-color" content="#f3f5f8">
   <title>ZNY Departure Director</title>
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <script>
-    // Runs before first paint so the page never flashes the wrong theme.
-    try {
-      var saved = localStorage.getItem("theme");
-      var dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
-      document.documentElement.dataset.theme = dark ? "dark" : "light";
-    } catch (error) {
-      document.documentElement.dataset.theme = "light";
-    }
-  </script>
   <script type="module" src="/src/main.ts"></script>
 </head>
-<body>
-  <a class="skip-link" href="#result">Skip to result</a>
-
-  <header class="topbar">
-    <div class="topbar-inner shell">
-      <a class="brand" href="./" aria-label="ZNY Departure Director home">
-        <span class="brand-mark" id="brandMark"></span>
-        <span class="brand-text"><b>Departure Director</b><small>New York ARTCC</small></span>
-      </a>
-      <div class="topbar-tools">
-        <time class="clock" id="clock" title="Current UTC time">--:--:--Z</time>
-        <button class="icon-button" id="themeButton" type="button" aria-label="Switch to dark theme"></button>
-      </div>
-    </div>
-  </header>
-
-  <main class="shell">
-    <nav class="airport-tabs" id="airportTabs" aria-label="Airport"></nav>
-
-    <div class="workspace">
-      <section class="card config" aria-labelledby="configTitle">
-        <header class="card-head">
-          <div>
-            <h1 id="configTitle">Configuration</h1>
-            <p class="card-sub" id="profileSubtitle">Loading rules…</p>
-          </div>
-          <button class="ghost-button" id="resetButton" type="button" title="Reset this airport to its defaults"></button>
-        </header>
-        <form id="configForm" class="config-form" autocomplete="off"></form>
-        <a class="source" id="sourceLink" href="#" target="_blank" rel="noopener noreferrer">
-          <span class="source-label">Source</span>
-          <strong id="sourceName">—</strong>
-          <small id="sourceMeta">—</small>
-        </a>
-      </section>
-
-      <section class="scope" id="result" aria-labelledby="resultTitle" aria-live="polite">
-        <header class="scope-head">
-          <h2 id="resultTitle"><span id="facilityBadge">----</span> Departure</h2>
-          <span class="scope-tag" id="procedureText">—</span>
-        </header>
-
-        <div class="scope-main">
-          <div class="compass-slot" id="compassSlot"></div>
-          <div class="readout">
-            <span class="readout-label" id="primaryLabel">Heading / climb</span>
-            <strong class="readout-value" id="primaryInstruction">—</strong>
-          </div>
-        </div>
-
-        <dl class="metrics">
-          <div class="metric"><dt>Initial altitude</dt><dd id="altitudeText">—</dd></div>
-          <div class="metric"><dt>Departure</dt><dd id="frequencyText">—</dd></div>
-          <div class="metric"><dt>Runway</dt><dd id="runwayText">—</dd></div>
-        </dl>
-
-        <div class="clearance">
-          <div class="clearance-head">
-            <span>Clearance</span>
-            <div class="clearance-actions">
-              <button class="pill-button subtle" id="shareButton" type="button" title="Copy a link to this configuration"></button>
-              <button class="pill-button" id="copyButton" type="button" title="Copy clearance (C)"></button>
-            </div>
-          </div>
-          <p class="clearance-text" id="clearanceText">—</p>
-        </div>
-
-        <div class="notice" id="notice" data-severity="info">
-          <span class="notice-icon" id="noticeIcon"></span>
-          <p id="warningText">Check the current configuration and SOP before you issue anything.</p>
-        </div>
-      </section>
-    </div>
-
-    <p class="shortcuts" aria-hidden="true">
-      <kbd>1</kbd>–<kbd>4</kbd> switch airport · <kbd>C</kbd> copy clearance · <kbd>T</kbd> theme
-    </p>
-  </main>
-
-  <button class="dock" id="dock" type="button" aria-label="Jump to the departure result" hidden>
-    <span class="dock-main" id="dockInstruction">—</span>
-    <span class="dock-sub" id="dockMeta">—</span>
-  </button>
-
-  <footer class="footer shell">
-    <p>For VATSIM use only. Not for real-world flight. Always check the current SOP and coordination.</p>
-    <p class="footer-links">
-      <a href="https://nyartcc.org" target="_blank" rel="noopener noreferrer">nyartcc.org</a>
-      <a href="https://github.com/lpxlpx7/ZNY-ATCT-Auto-Delivery" target="_blank" rel="noopener noreferrer">GitHub</a>
-      <span>© 2026 Jurina</span>
-    </p>
-  </footer>
-
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-</body>
+<body></body>
 </html>

@@ -34,14 +34,16 @@ Other scripts:
 ## Project layout
 
 ```
-index.html              Page shell
+index.html              Stub that loads src/main.ts
+src/boot.ts             Applies theme, styles and markup first
 src/main.ts             Wiring: state, rendering, shortcuts
 src/engine.ts           Rule matching and small helpers
 src/state.ts            Remembered selections and shareable links
 src/types.ts            Shared types
 src/airports/*.ts       Rules for each airport
 src/ui/*.ts             Form, compass, icons, DOM helpers
-src/styles.css          Styles (light and dark themes)
+src/ui/styles.ts        Styles (light and dark themes)
+src/ui/layout.ts        Page markup
 public/                 Files copied as-is (CNAME, favicon)
 ```
 
