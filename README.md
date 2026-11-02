@@ -4,22 +4,59 @@ A small tool for VATSIM tower and delivery controllers in New York. Pick an airp
 
 Covers KJFK (IFR and VFR), KEWR, KLGA and KPHL.
 
+## Using it
+
+- Click the options on the left; the result on the right updates as you go.
+- **Copy** puts the clearance on your clipboard. **Link** copies a URL that opens the page with the same selections.
+- Your last selections for each airport are remembered in the browser. **Reset** puts an airport back to its defaults.
+- Shortcuts: <kbd>1</kbd>–<kbd>4</kbd> switch airport, <kbd>C</kbd> copy the clearance, <kbd>T</kbd> switch theme.
+- For a JFK VFR departure you can type the squawk, and it's filled into the clearance.
+
 ## Run locally
 
-Double-click `start.bat`. It opens `http://localhost:8765/` in your browser. Keep the window open while you use it and press `Ctrl+C` to stop.
+You need [Node.js](https://nodejs.org) 20 or newer.
 
-You need the local server because browsers won't load the JSON files from a `file://` page. Nothing else needs installing.
+```bash
+npm install
+npm run dev
+```
+
+This opens `http://localhost:8765/`. Edits to the code or rules reload the page automatically.
+
+Other scripts:
+
+| Command | What it does |
+| --- | --- |
+| `npm run typecheck` | Checks types without building |
+| `npm run build` | Type-checks, then builds the site into `dist/` |
+| `npm run preview` | Serves the built `dist/` folder |
+
+## Project layout
+
+```
+index.html              Page shell
+src/main.ts             Wiring: state, rendering, shortcuts
+src/engine.ts           Rule matching and small helpers
+src/state.ts            Remembered selections and shareable links
+src/types.ts            Shared types
+src/airports/*.ts       Rules for each airport
+src/ui/*.ts             Form, compass, icons, DOM helpers
+src/styles.css          Styles (light and dark themes)
+public/                 Files copied as-is (CNAME, favicon)
+```
 
 ## Rule data
 
-The rules live in plain JSON:
+Each airport's rules are a typed TypeScript module in `src/airports/`:
 
-- `data/kjfk/atct-cab.json`
-- `data/kewr/departure.json`
-- `data/klga/departure.json`
-- `data/kphl/departure.json`
+- `kjfk.ts` uses ordered tables: the first matching rule wins, and IFR resolves the SID, then the climb, then the altitude.
+- `kewr.ts`, `klga.ts` and `kphl.ts` use a single table where the most specific matching rule wins (more `match` keys beats fewer; on a tie, the later rule wins).
 
-Edit a file and refresh the page. There's no build step.
+A `match` value of `"*"` matches anything. Because the rules are typed, a misspelled field name or a missing result field is a build error rather than a silent bug.
+
+## Deploying
+
+`.github/workflows/deploy.yml` builds the site and publishes `dist/` to GitHub Pages on every push to `main`. In the repository settings, set **Pages → Source** to **GitHub Actions**. The custom domain comes from `public/CNAME`.
 
 ## Disclaimer
 

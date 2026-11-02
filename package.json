@@ -1,0 +1,17 @@
+{
+  "name": "zny-departure-director",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Departure headings, initial altitudes and frequencies for JFK, Newark, LaGuardia and Philadelphia on VATSIM.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --open",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview --open",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vite": "^8.3.5"
+  }
+}

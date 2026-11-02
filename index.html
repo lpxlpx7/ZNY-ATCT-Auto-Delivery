@@ -4,102 +4,114 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="description" content="Departure headings, initial altitudes and frequencies for JFK, Newark, LaGuardia and Philadelphia on VATSIM.">
-  <meta name="theme-color" content="#f5f5f7">
+  <meta name="theme-color" content="#f3f5f8">
   <title>ZNY Departure Director</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <script>
-    (function () {
-      var preference = "system";
-      try { preference = localStorage.getItem("theme") || "system"; } catch (error) {}
-      var dark = preference === "dark" || (preference === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+    // Runs before first paint so the page never flashes the wrong theme.
+    try {
+      var saved = localStorage.getItem("theme");
+      var dark = saved ? saved === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
       document.documentElement.dataset.theme = dark ? "dark" : "light";
-    }());
+    } catch (error) {
+      document.documentElement.dataset.theme = "light";
+    }
   </script>
-  <link rel="stylesheet" href="css/style.css">
+  <script type="module" src="/src/main.ts"></script>
 </head>
 <body>
-  <header class="site-header">
-    <nav class="nav shell" aria-label="Primary navigation">
-      <a class="brand" href="#top">ZNY Departure Director</a>
-      <div class="nav-right">
-        <span class="clock" id="clock" title="Current UTC time">--:--Z</span>
-        <button class="theme-button" type="button" aria-label="Switch color theme"><span class="icon icon-moon" aria-hidden="true"></span></button>
+  <a class="skip-link" href="#result">Skip to result</a>
+
+  <header class="topbar">
+    <div class="topbar-inner shell">
+      <a class="brand" href="./" aria-label="ZNY Departure Director home">
+        <span class="brand-mark" id="brandMark"></span>
+        <span class="brand-text"><b>Departure Director</b><small>New York ARTCC</small></span>
+      </a>
+      <div class="topbar-tools">
+        <time class="clock" id="clock" title="Current UTC time">--:--:--Z</time>
+        <button class="icon-button" id="themeButton" type="button" aria-label="Switch to dark theme"></button>
       </div>
-    </nav>
+    </div>
   </header>
 
-  <main id="top">
-    <header class="intro shell">
-      <p class="eyebrow">New York ARTCC</p>
-      <h1>Departures, sorted.</h1>
-      <p>Pick an airport and its current configuration to get the SID, heading, initial altitude and departure frequency.</p>
-    </header>
+  <main class="shell">
+    <nav class="airport-tabs" id="airportTabs" aria-label="Airport"></nav>
 
-    <div class="stack">
-      <nav class="airport-tabs" id="airportTabs" aria-label="Airport"></nav>
-
-      <section class="workspace">
-        <aside class="tile control-panel">
-          <div class="panel-heading">
-            <h2>Configuration</h2>
-            <span class="badge" id="facilityBadge">----</span>
+    <div class="workspace">
+      <section class="card config" aria-labelledby="configTitle">
+        <header class="card-head">
+          <div>
+            <h1 id="configTitle">Configuration</h1>
+            <p class="card-sub" id="profileSubtitle">Loading rules…</p>
           </div>
-          <p class="panel-subtitle" id="profileSubtitle">Loading rules…</p>
-          <form id="configForm"></form>
-          <div class="source-card">
-            <span>Source</span>
-            <strong id="sourceName">—</strong>
-            <small id="sourceMeta">—</small>
-          </div>
-        </aside>
+          <button class="ghost-button" id="resetButton" type="button" title="Reset this airport to its defaults"></button>
+        </header>
+        <form id="configForm" class="config-form" autocomplete="off"></form>
+        <a class="source" id="sourceLink" href="#" target="_blank" rel="noopener noreferrer">
+          <span class="source-label">Source</span>
+          <strong id="sourceName">—</strong>
+          <small id="sourceMeta">—</small>
+        </a>
+      </section>
 
-        <section class="tile result-panel">
-          <div class="panel-heading">
-            <h2>Departure</h2>
-          </div>
+      <section class="scope" id="result" aria-labelledby="resultTitle" aria-live="polite">
+        <header class="scope-head">
+          <h2 id="resultTitle"><span id="facilityBadge">----</span> Departure</h2>
+          <span class="scope-tag" id="procedureText">—</span>
+        </header>
 
-          <div class="primary-result">
-            <div class="compass" aria-hidden="true">
-              <div class="compass-rings"></div>
-              <div class="heading-line" id="headingLine"></div>
-              <div class="aircraft">▲</div>
-              <span class="north">360</span><span class="east">090</span><span class="south">180</span><span class="west">270</span>
+        <div class="scope-main">
+          <div class="compass-slot" id="compassSlot"></div>
+          <div class="readout">
+            <span class="readout-label" id="primaryLabel">Heading / climb</span>
+            <strong class="readout-value" id="primaryInstruction">—</strong>
+          </div>
+        </div>
+
+        <dl class="metrics">
+          <div class="metric"><dt>Initial altitude</dt><dd id="altitudeText">—</dd></div>
+          <div class="metric"><dt>Departure</dt><dd id="frequencyText">—</dd></div>
+          <div class="metric"><dt>Runway</dt><dd id="runwayText">—</dd></div>
+        </dl>
+
+        <div class="clearance">
+          <div class="clearance-head">
+            <span>Clearance</span>
+            <div class="clearance-actions">
+              <button class="pill-button subtle" id="shareButton" type="button" title="Copy a link to this configuration"></button>
+              <button class="pill-button" id="copyButton" type="button" title="Copy clearance (C)"></button>
             </div>
-            <div class="primary-copy">
-              <span id="primaryLabel">Heading / climb</span>
-              <strong id="primaryInstruction">—</strong>
-              <p id="procedureText">—</p>
-            </div>
           </div>
+          <p class="clearance-text" id="clearanceText">—</p>
+        </div>
 
-          <div class="metric-grid">
-            <article><span>Initial altitude</span><strong id="altitudeText">—</strong></article>
-            <article><span>Departure</span><strong id="frequencyText">—</strong></article>
-            <article><span>Runway</span><strong id="runwayText">—</strong></article>
-          </div>
-
-          <div class="clearance-card">
-            <div><span>Clearance</span><button id="copyButton" type="button">Copy</button></div>
-            <p id="clearanceText">—</p>
-          </div>
-
-          <p class="notice" id="warningText">Check the current configuration and SOP before you issue anything.</p>
-        </section>
+        <div class="notice" id="notice" data-severity="info">
+          <span class="notice-icon" id="noticeIcon"></span>
+          <p id="warningText">Check the current configuration and SOP before you issue anything.</p>
+        </div>
       </section>
     </div>
+
+    <p class="shortcuts" aria-hidden="true">
+      <kbd>1</kbd>–<kbd>4</kbd> switch airport · <kbd>C</kbd> copy clearance · <kbd>T</kbd> theme
+    </p>
   </main>
 
-  <footer class="site-footer shell">
-    <div class="footer-top">
-      <p>For VATSIM use only. Not for real-world flight.</p>
-      <a href="https://nyartcc.org" target="_blank" rel="noopener noreferrer">Procedures from nyartcc.org <span class="icon icon-external" aria-hidden="true"></span></a>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 Jurina</p>
-      <a href="https://github.com/lpxlpx7/ZNY-ATCT-Auto-Delivery" target="_blank" rel="noopener noreferrer">Source on GitHub <span class="icon icon-external" aria-hidden="true"></span></a>
-    </div>
+  <button class="dock" id="dock" type="button" aria-label="Jump to the departure result" hidden>
+    <span class="dock-main" id="dockInstruction">—</span>
+    <span class="dock-sub" id="dockMeta">—</span>
+  </button>
+
+  <footer class="footer shell">
+    <p>For VATSIM use only. Not for real-world flight. Always check the current SOP and coordination.</p>
+    <p class="footer-links">
+      <a href="https://nyartcc.org" target="_blank" rel="noopener noreferrer">nyartcc.org</a>
+      <a href="https://github.com/lpxlpx7/ZNY-ATCT-Auto-Delivery" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <span>© 2026 Jurina</span>
+    </p>
   </footer>
 
-  <div class="toast" id="toast" role="status">Copied</div>
-  <script src="app.js"></script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
