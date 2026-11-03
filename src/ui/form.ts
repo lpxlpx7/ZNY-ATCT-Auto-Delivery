@@ -1,6 +1,31 @@
 import type { ChoiceField, Field, Option, TextField, Values } from "../types";
 import { h } from "./dom";
 
+/** The grey follow-up after each heading, Apple Store style: "Runway. Which one is departing?" */
+const QUESTIONS: Readonly<Record<string, string>> = {
+  operation: "IFR or VFR?",
+  runway: "Which one is departing?",
+  aircraft: "Jet or prop?",
+  configuration: "What's in effect right now?",
+  navigation: "What can the aircraft fly?",
+  route_group: "Is it filed via DEEZZ?",
+  flight_following: "Did the pilot ask for it?",
+  exit: "Which way is it headed?",
+  squawk: "Optional.",
+  condition: "Anything out of the ordinary?",
+  landing: "Which one is LaGuardia landing?",
+  gate: "Which way out?",
+};
+
+/** "Departure runway" + question → <b>Departure runway.</b> <span>Which one is departing?</span> */
+export function heading(id: string, label: string): DocumentFragment {
+  const fragment = document.createDocumentFragment();
+  fragment.append(h("b", {}, `${label}.`));
+  const question = QUESTIONS[id];
+  if (question) fragment.append(" ", h("span", {}, question));
+  return fragment;
+}
+
 function choices(field: ChoiceField, options: readonly Option[], value: string | undefined): HTMLDivElement {
   const list = h("div", { class: "choices", "data-columns": field.columns });
   for (const option of options) {
@@ -22,7 +47,7 @@ function choiceField(field: ChoiceField, value: string | undefined): HTMLFieldSe
         h("div", { class: "choice-group" }, h("span", { class: "choice-group-label" }, group.label), choices(field, field.options.filter((option) => option.group === group.id), value)),
       )
     : [choices(field, field.options, value)];
-  return h("fieldset", { class: "field", "data-field": field.id }, h("legend", { class: "field-label" }, field.label), ...body);
+  return h("fieldset", { class: "field", "data-field": field.id }, h("legend", { class: "field-label" }, heading(field.id, field.label)), ...body);
 }
 
 function textField(field: TextField, value: string | undefined): HTMLDivElement {
@@ -30,7 +55,7 @@ function textField(field: TextField, value: string | undefined): HTMLDivElement 
   return h(
     "div",
     { class: "field", "data-field": field.id },
-    h("label", { class: "field-label", for: id }, field.label),
+    h("label", { class: "field-label", for: id }, heading(field.id, field.label)),
     h("input", {
       class: "text-input",
       id,

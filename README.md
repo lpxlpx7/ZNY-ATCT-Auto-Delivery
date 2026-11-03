@@ -44,7 +44,7 @@ src/airports/*.ts       Rules for each airport
 src/ui/*.ts             Form, compass, icons, DOM helpers
 src/ui/styles.ts        Styles (light and dark themes)
 src/ui/layout.ts        Page markup
-public/                 Files copied as-is (CNAME, favicon)
+public/                 Files copied as-is (CNAME, NYARTCC logo, SF Pro fonts)
 ```
 
 ## Rule data

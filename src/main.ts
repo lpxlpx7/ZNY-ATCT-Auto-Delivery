@@ -6,7 +6,7 @@ import type { Airport, Departure } from "./types";
 import { createCompass } from "./ui/compass";
 import { byId, h, isTyping, setText, svg } from "./ui/dom";
 import { fieldSignature, readForm, renderForm } from "./ui/form";
-import { icons, type IconName } from "./ui/icons";
+import { icons } from "./ui/icons";
 
 const state = loadState();
 const form = byId<HTMLFormElement>("configForm");
@@ -16,12 +16,6 @@ let current: Departure | undefined;
 
 function airport(): Airport {
   return findAirport(state.airport) ?? AIRPORTS[0]!;
-}
-
-function iconLabel(name: IconName, label: string): DocumentFragment {
-  const fragment = document.createDocumentFragment();
-  fragment.append(svg(icons[name]), h("span", {}, label));
-  return fragment;
 }
 
 // ---------- Clock & theme ----------
@@ -34,7 +28,7 @@ type Theme = "light" | "dark";
 
 function applyTheme(theme: Theme): void {
   document.documentElement.dataset.theme = theme;
-  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content = theme === "dark" ? "#0b0f17" : "#f3f5f8";
+  document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')!.content = theme === "dark" ? "#000000" : "#ffffff";
   const button = byId("themeButton");
   button.replaceChildren(svg(theme === "dark" ? icons.sun : icons.moon));
   button.setAttribute("aria-label", `Switch to ${theme === "dark" ? "light" : "dark"} theme`);
@@ -82,12 +76,10 @@ async function copyClearance(): Promise<void> {
   if (!current) return;
   const button = byId("copyButton");
   if (await copy(current.clearance)) {
-    toast("Clearance copied");
-    button.replaceChildren(iconLabel("check", "Copied"));
-    button.classList.add("done");
+    toast("Copied");
+    button.textContent = "Copied";
     window.setTimeout(() => {
-      button.replaceChildren(iconLabel("copy", "Copy"));
-      button.classList.remove("done");
+      button.textContent = "Copy";
     }, 1600);
   } else {
     toast("Couldn't copy. Select the text instead.");
@@ -96,23 +88,29 @@ async function copyClearance(): Promise<void> {
 
 // ---------- Rendering ----------
 
-function renderTabs(): void {
-  const tabs = byId("airportTabs");
-  tabs.replaceChildren(
+/** The airport picker appears twice: as cards in the options column and as links in the global nav. */
+function renderAirports(): void {
+  byId("airportCards").replaceChildren(
     ...AIRPORTS.map((item, index) =>
       h(
         "button",
-        { type: "button", class: "airport-tab", "data-airport": item.id, "aria-pressed": item.id === state.airport, title: `${item.name} (${index + 1})` },
+        { type: "button", class: "airport-card", "data-airport": item.id, "aria-pressed": item.id === state.airport, title: `${item.name} (${index + 1})` },
         h("b", {}, item.code),
-        h("small", {}, item.name),
+        h("span", {}, item.name),
       ),
+    ),
+  );
+  byId("globalLinks").replaceChildren(
+    ...AIRPORTS.map((item) =>
+      h("button", { type: "button", class: "globalnav-link", "data-airport": item.id, "aria-pressed": item.id === state.airport }, item.name),
     ),
   );
 }
 
 function renderMeta(): void {
-  const { code, subtitle, source } = airport();
-  setText("facilityBadge", code);
+  const { code, name, subtitle, source } = airport();
+  setText("facilityBadge", `${code} · ${name}`);
+  setText("localAirport", code);
   setText("profileSubtitle", subtitle);
   setText("sourceName", source.document);
   setText("sourceMeta", `${source.revision} · Revised ${source.revised}`);
@@ -169,7 +167,7 @@ function update(): void {
 function selectAirport(id: string): void {
   if (!findAirport(id) || id === state.airport) return;
   state.airport = id;
-  renderTabs();
+  renderAirports();
   renderMeta();
   update();
 }
@@ -194,7 +192,7 @@ function reset(): void {
 function watchDock(): void {
   const dock = byId<HTMLButtonElement>("dock");
   const result = byId("result");
-  const narrow = matchMedia("(max-width: 900px)");
+  const narrow = matchMedia("(max-width: 833px)");
   let resultVisible = true;
   const sync = (): void => {
     dock.hidden = !narrow.matches || resultVisible;
@@ -210,11 +208,8 @@ function watchDock(): void {
 // ---------- Wiring ----------
 
 function init(): void {
-  byId("brandMark").replaceChildren(svg(icons.logo));
   byId("compassSlot").replaceChildren(compass.element);
-  byId("resetButton").replaceChildren(iconLabel("reset", "Reset"));
-  byId("copyButton").replaceChildren(iconLabel("copy", "Copy"));
-  byId("shareButton").replaceChildren(iconLabel("link", "Link"));
+  for (const link of document.querySelectorAll(".external")) link.append(" ", svg(icons.external));
 
   applyTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
   matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
@@ -230,7 +225,7 @@ function init(): void {
   tick();
   window.setInterval(tick, 1000);
 
-  byId("airportTabs").addEventListener("click", (event) => {
+  document.addEventListener("click", (event) => {
     const button = (event.target as Element).closest<HTMLButtonElement>("button[data-airport]");
     if (button?.dataset.airport) selectAirport(button.dataset.airport);
   });
@@ -246,6 +241,7 @@ function init(): void {
   byId("themeButton").addEventListener("click", toggleTheme);
   byId("resetButton").addEventListener("click", reset);
   byId("copyButton").addEventListener("click", () => void copyClearance());
+  byId("localCopy").addEventListener("click", () => void copyClearance());
   byId("shareButton").addEventListener("click", async () => {
     toast((await copy(location.href)) ? "Link copied" : "Couldn't copy the link");
   });
@@ -271,13 +267,13 @@ function init(): void {
     renderedSignature = "";
     if (id !== state.airport) {
       state.airport = id;
-      renderTabs();
+      renderAirports();
       renderMeta();
     }
     update();
   });
 
-  renderTabs();
+  renderAirports();
   renderMeta();
   update();
   watchDock();
